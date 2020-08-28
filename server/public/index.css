@@ -1,0 +1,12 @@
+.video{
+    border: 1px solid black;
+}
+
+.main-container{
+    display: flex;
+    justify-content: start;
+}
+
+.item{
+    margin: 20px;
+}
