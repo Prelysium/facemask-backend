@@ -9,7 +9,7 @@ from mask.detect import inference as detect_masks
 
 class OpenCVStreamTrack(MediaStreamTrack):
 
-    kind = 'video'
+    kind = "video"
 
     def __init__(self, track, mode):
         super().__init__()
@@ -22,7 +22,7 @@ class OpenCVStreamTrack(MediaStreamTrack):
         while not self.track._queue.empty():
             frame = await self.track.recv()
 
-        if self.mode == 'regular':
+        if self.mode == "regular":
             time.sleep(0.05)
             return frame
 
@@ -55,9 +55,10 @@ class OpenCVStreamTrack(MediaStreamTrack):
         # img = cv2.bitwise_and(img_color, img_edges)
 
         # rebuild a VideoFrame, preserving timing information
-        new_frame = VideoFrame.from_ndarray(cv2.cvtColor(img, cv2.COLOR_RGB2BGR), format="bgr24")
+        new_frame = VideoFrame.from_ndarray(
+            cv2.cvtColor(img, cv2.COLOR_RGB2BGR), format="bgr24"
+        )
         new_frame.pts = frame.pts
         new_frame.time_base = frame.time_base
 
         return new_frame
-

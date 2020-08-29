@@ -14,6 +14,7 @@ connection_container = ConnectionContainer()
 
 import aiortc
 
+
 def aiortc_multiple_stream_patch() -> None:
     def _patched_route_rtp(self, packet):
         ssrc_receiver = self.ssrc_table.get(packet.ssrc)
@@ -34,6 +35,7 @@ def aiortc_multiple_stream_patch() -> None:
 
     aiortc.rtcdtlstransport.RtpRouter.route_rtp = _patched_route_rtp
 
+
 aiortc_multiple_stream_patch()
 
 
@@ -41,28 +43,32 @@ async def on_shutdown():
     pass
 
 
-@routes.get('/')
+@routes.get("/")
 async def index(request):
     content = open(os.path.join(ROOT, "server/public/index.html"), "r").read()
     return web.Response(content_type="text/html", text=content)
 
 
-@routes.post('/offer')
+@routes.post("/offer")
 async def offer(request):
     params = await request.json()
 
-    answer = await connection_container.handle_offer(sdp=params["sdp"], mode=params["mode"])
+    answer = await connection_container.handle_offer(
+        sdp=params["sdp"], mode=params["mode"]
+    )
     print(params["mode"])
 
-    return web.Response(content_type='application/json',
-                        body=json.dumps({"sdp": answer.sdp, "type": "answer"})
-                        )
+    return web.Response(
+        content_type="application/json",
+        body=json.dumps({"sdp": answer.sdp, "type": "answer"}),
+    )
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     app = web.Application()
     app.on_shutdown.append(on_shutdown)
 
     app.add_routes(routes)
-    app.add_routes([web.static('/', ROOT + 'server/public')])
+    app.add_routes([web.static("/", ROOT + "server/public")])
     port = 3000 if len(sys.argv) == 1 else sys.argv[1]
     web.run_app(app, port=port)

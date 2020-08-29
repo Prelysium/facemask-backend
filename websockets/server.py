@@ -3,6 +3,8 @@ import websockets
 import json
 
 connected = set()
+
+
 async def server(websocket, path):
     # Register.
     connected.add(websocket)
@@ -11,7 +13,7 @@ async def server(websocket, path):
             for conn in connected:
                 if conn == websocket:
                     await conn.send(json.loads(message))
-                    await conn.send(f'Have message for you: {message}')
+                    await conn.send(f"Have message for you: {message}")
     finally:
         connected.remove(websocket)
 
