@@ -9,8 +9,8 @@ def register_handlers(connection, mode):
         print("track received")
         print(type(track))
         transformed_track = OpenCVStreamTrack(track, mode)
-        if mode == "cartoon":
-            connection.addTrack(transformed_track)
+
+        connection.addTrack(transformed_track)
 
 
 class ConnectionContainer:

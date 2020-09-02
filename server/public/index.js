@@ -15,12 +15,6 @@ button2.addEventListener('click', () => startDeliveringMedia(select2, video2, mo
 
 let stream;
 const connections = [];
-
-
-
-
-
-
 let videoDeviceList;
 
 navigator.mediaDevices.enumerateDevices().then(deviceList => {
