@@ -3,6 +3,10 @@ import os
 import cv2
 import tensorflow as tf
 
+from config import config_import as conf
+
+MASK_THRESHOLD = conf.get_config_data_by_key('entrance')['MASK_THRESHOLD']
+
 
 def load_tflite_model(tf_model_path):
     """
@@ -323,6 +327,7 @@ def draw_results(
     id2class = {0: "Mask", 1: "NoMask"}
     height, width, _ = image.shape
     boxes = []
+    masks_on = True
 
     # for each list of bbox indices needed for NMS,
     # we compute a confidence interval,
@@ -337,6 +342,9 @@ def draw_results(
         ymin = max(0, int(bbox[1] * height))
         xmax = min(int(bbox[2] * width), width)
         ymax = min(int(bbox[3] * height), height)
+        print((xmax-xmin) * (ymax-ymin)/ width / height)
+        if ((xmax-xmin) * (ymax-ymin)) / width / height < (MASK_THRESHOLD):
+            continue
         box = ([xmin, ymin, xmax, ymax], class_id)
         boxes.append(box)
 
@@ -346,6 +354,7 @@ def draw_results(
 
         else:
             color = (255, 0, 0)
+            masks_on = False
 
         if blur:
             image[ymin:ymax, xmin:xmax] = cv2.blur(
@@ -362,4 +371,4 @@ def draw_results(
             color,
         )
 
-    return boxes
+    return boxes, masks_on

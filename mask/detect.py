@@ -74,17 +74,11 @@ def inference(
         y_bboxes, bbox_max_scores, conf_thresh=conf_thresh, iou_thresh=iou_thresh
     )
 
-    boxes = utils.draw_results(
+    boxes, masks_on = utils.draw_results(
         keep_idxs, image, bbox_max_scores, bbox_max_score_classes, y_bboxes
     )
 
     if show_result:
         Image.fromarray(image).show()
-
-    masks_on = True
-    for ind in keep_idxs:
-        if 1 == bbox_max_score_classes[ind]:
-            masks_on = False
-            break
 
     return boxes, masks_on

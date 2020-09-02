@@ -101,7 +101,6 @@ class Tracker:
                 # different to its previous direction
                 # update the people counter
                 if to.direction != to.prev_direction:
-                    print('--------------------------- {}'.format(to.direction))
                     # A person has just walked in
                     if to.direction == 'in' and to.start_point != 'down':
                         people_in += 1
@@ -112,11 +111,6 @@ class Tracker:
                         to.prev_direction = 'out'
                         people_out += 1
                         to.start_point = 'down'
-                    # updating people_currently_in for occupancy violation
-                    # if people_in > people_out:
-                    #     people_currently_in = people_in - people_out
-                    # else:
-                    #     people_currently_in = 0
 
             # store the trackable object in our dictionary
             self.trackableObjects[objectID] = to
@@ -131,8 +125,6 @@ class Tracker:
                             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
                 cv2.circle(image, (centroid[0], centroid[1]),
                            4, (0, 255, 0), -1)
-        # print('people_in:  {}'.format(people_in))
-        # print('people_out:  {}'.format(people_out))
         if people_out > people_in:
             people_out = people_in
         # update database information about total number
