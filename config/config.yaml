@@ -1,4 +1,4 @@
-CAPACITY: 30
+CAPACITY: 3
 mask_detection:
   MODEL_PATH: mask/models/face_mask_detection.tflite
 human_detection:

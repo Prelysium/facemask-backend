@@ -386,7 +386,7 @@ def add_view_messages(img, people_on_frame, masks_on):
     people_in = DB.in_current()
 
     # if place is full show the message for it
-    if people_in >= CAPACITY:
+    if people_in > CAPACITY:
         return overcrowd_overlay(img)
 
     # othewise show the messages according to the incoming people
