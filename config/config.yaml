@@ -1,5 +1,80 @@
+CAPACITY: 30
 mask_detection:
   MODEL_PATH: mask/models/face_mask_detection.tflite
 human_detection:
   COCO_INP_SIZE: 300
   MOBILENET_SSD_PATH: human/models/mobilenet_ssd_v2_coco_quant_postprocess.tflite
+entrance:
+  ENTRANCE_DIRECTION: down
+  LINE_BORDER: 0.5
+  MASK_THRESHOLD: 0.01
+db:
+  COUNTER_TABLE: COUNTER
+  COUNT_COLUMN: COUNT
+  DB_FILE_PATH: DB/count.db
+  ID_COLUMN: ID
+  ID_IN: in
+  ID_OUT: out
+  SELECT_TEMPLATE: select {} from {} where {}=='{}'
+video_paths:
+  CAMERA_IN: 0
+  CAMERA_OUT: 2
+font:
+  FONT_PATH: view/fonts/Raleway-VariableFont_wght.ttf
+  FONT_SIZE_LARGE: 64
+  FONT_SIZE_MEDIUM: 48
+  FONT_SIZE_SMALL: 36
+  FONT_WAIT: 72
+text:
+  SAFETY_FIRST: '!       SAFETY FIRST       !'
+  TEXT_BITTE: Bitte warten Sie
+  TEXT_BITTE_DOWN: Please wear a face mask
+  TEXT_COUNTER: "People in store"
+  TEXT_COUNTER_DOWN: "Store:"
+  TEXT_COUNTER_UP: People in
+  TEXT_DANKE_DOWN: Thanks for wearing a mask!
+  TEXT_WAIT: PLEASE WAIT
+overcrowd:
+  X_CENTER_LEFT: 410
+  X_CENTER_RIGHT: 960
+  Y_CROWN: 149
+  Y_DISTANCE: 786
+  Y_KEEP_CALM: 337
+  Y_TEXT: 483
+  Y_TEXT_COUNTER: 500
+  Y_TEXT_WAIT: 168
+monitor_display:
+  OVERLAY_ALPHA: 0.7
+  OVERLAY_COLOR: !!python/tuple
+  - 0
+  - 0
+  - 0
+  PLEASE_WAIT_COLOR: !!python/tuple
+  - 86
+  - 214
+  - 147
+  RESOLUTION: !!python/tuple
+  - 1920
+  - 1080
+  WARNING_COLOR: !!python/tuple
+  - 224
+  - 10
+  - 10
+  WHITE: !!python/tuple
+  - 255
+  - 255
+  - 255
+watermarks:
+  PATH_CROWN: viewer/watermark/Crown.png
+  PATH_DISTANCE: viewer/watermark/distance.png
+  PATH_KEEP_CALM: viewer/watermark/keep_calm.png
+  PATH_LOGO: viewer/watermark/logo.png
+  PATH_OVERCROWD_TEXT: viewer/watermark/overcrowd_text.png
+camera_in:
+  OUTPUT_WINDOW_TITLE: ENTRANCE
+  RELEASE_MESSAGE: Releasing video resource
+  TIME_INFO_SAMPLE: read_frame:%f, infer time:%f, write time:%f
+camera_out:
+  RELEASE_MESSAGE: Releasing video resource (out)
+  TIME_INFO_SAMPLE: read_frame:%f, infer time:%f
+  DOOR_VIEW_WINDOW_TITLE: Door View Camera Feed

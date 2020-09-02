@@ -81,4 +81,10 @@ def inference(
     if show_result:
         Image.fromarray(image).show()
 
-    return boxes
+    masks_on = True
+    for ind in keep_idxs:
+        if 1 == bbox_max_score_classes[ind]:
+            masks_on = False
+            break
+
+    return boxes, masks_on
