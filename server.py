@@ -123,16 +123,16 @@ async def file(request):
 
             # saving
             image_id = image_generator.get_image_id()
-            with open("server/images/" + str(image_id) + ".png", "wb") as outfile:
+            with open("server/images/" + str(image_id) + ".jpeg", "wb") as outfile:
                 # Copy the BytesIO stream to the output file
                 outfile.write(pic.getbuffer())
 
             imgByteArr = BytesIO()
-            image.save(imgByteArr, format='PNG')
+            image.save(imgByteArr, format='JPEG')
             # Store the image
-            image_generator.add_image(image_id, imgByteArr, file_name)
+            image_generator.add_image(image_id, imgByteArr, file_name.split('.')[0] + ".jpeg")
             my_pic_names.append(image_id)
-            os.remove('./server/images/' + str(image_id) + '.png')
+            # os.remove('./server/images/' + str(image_id) + '.png')
 
     # return status to the server.
     return web.Response(
