@@ -10,7 +10,7 @@ import os
 
 from mask.detect import inference as detect_masks
 from server.ConnectionContainer import ConnectionContainer
-from server.image_generator import ImageGenerator
+from server.ImageGenerator import ImageGenerator
 from aiohttp import web
 from PIL import Image
 from io import BytesIO
