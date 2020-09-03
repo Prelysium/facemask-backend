@@ -9,6 +9,7 @@ import cv2
 import os
 
 from mask.detect import inference as detect_masks
+from mask.utils import write_output_video
 from server.ConnectionContainer import ConnectionContainer
 from server.ImageGenerator import ImageGenerator
 from aiohttp import web
@@ -85,26 +86,50 @@ async def file(request):
 
     for file_name in post:
         file = post.get(file_name)
-        img_content = file.file.read()
-        # Read image
-        pic = BytesIO(img_content)
+        if file.content_type.split('/')[0] == 'video':
+            video_path = './videos/{}'.format(file.filename)
+            video_content = file.file.read()
+            video = BytesIO(video_content)
+            # save video
+            with open(video_path,'wb') as outfile:
+                outfile.write(video.getbuffer())
+            outfile.close()
 
-        ###### Do transformation of image and save it locally.
-        image = Image.open(pic).convert("RGB")
-        image = np.array(image)
-        image = image[:, :, ::-1].copy()
-        detect_masks(image, show_result=True)
-        Image.fromarray(image).show()
+            cap = cv2.VideoCapture(video_path)
+            if not cap.isOpened():
+                raise ValueError("Video open failed.")
+                return
 
-        # saving
-        image_id = image_generator.get_image_id()
-        with open("server/images/" + str(image_id) + ".png", "wb") as outfile:
-            # Copy the BytesIO stream to the output file
-            outfile.write(pic.getbuffer())
+            writer = write_output_video(cap, './videos/output/output.avi')
+            status_video_capture = True
+            while status_video_capture:
+                status_video_capture, img_raw = cap.read()
 
-        # Store the image
-        image_generator.add_image(image_id, pic, file_name)
-        my_pic_names.append(image_id)
+                if status_video_capture:
+                    detect_masks(img_raw)
+                    writer.write(img_raw[:, :, :])
+            os.remove(video_path)
+        else:
+            img_content = file.file.read()
+            # Read image
+            pic = BytesIO(img_content)
+
+            ###### Do transformation of image and save it locally.
+            image = Image.open(pic).convert("RGB")
+            image = np.array(image)
+            image = image[:, :, ::-1].copy()
+            detect_masks(image, show_result=True)
+            Image.fromarray(image).show()
+
+            # saving
+            image_id = image_generator.get_image_id()
+            with open("server/images/" + str(image_id) + ".png", "wb") as outfile:
+                # Copy the BytesIO stream to the output file
+                outfile.write(pic.getbuffer())
+
+            # Store the image
+            image_generator.add_image(image_id, pic, file_name)
+            my_pic_names.append(image_id)
 
     # return status to the server.
     return web.Response(
