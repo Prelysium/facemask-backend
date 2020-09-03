@@ -104,9 +104,10 @@ async def file(request):
             status_video_capture = True
             while status_video_capture:
                 status_video_capture, img_raw = cap.read()
-
                 if status_video_capture:
+                    img_raw = cv2.cvtColor(img_raw, cv2.COLOR_BGR2RGB)
                     detect_masks(img_raw)
+                    img_raw = cv2.cvtColor(img_raw, cv2.COLOR_RGB2BGR)
                     writer.write(img_raw[:, :, :])
             os.remove(video_path)
         else:
@@ -118,6 +119,7 @@ async def file(request):
             image = Image.open(pic).convert("RGB")
             image = np.array(image)
             image = image[:, :, ::-1].copy()
+            image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
             detect_masks(image, show_result=True)
             image = Image.fromarray(image)
 
