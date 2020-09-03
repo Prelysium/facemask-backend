@@ -33,7 +33,12 @@ id2class = {0: "Mask", 1: "NoMask"}
 
 
 def inference(
-    image, conf_thresh=0.5, iou_thresh=0.4, target_shape=(260, 260), show_result=False
+    image,
+    conf_thresh=0.5,
+    iou_thresh=0.4,
+    target_shape=(260, 260),
+    show_result=False,
+    blur=True,
 ):
     """
     Driver function for face mask detection inference
@@ -75,7 +80,7 @@ def inference(
     )
 
     boxes, masks_on = utils.draw_results(
-        keep_idxs, image, bbox_max_scores, bbox_max_score_classes, y_bboxes
+        keep_idxs, image, bbox_max_scores, bbox_max_score_classes, y_bboxes, blur=blur
     )
 
     # if show_result:

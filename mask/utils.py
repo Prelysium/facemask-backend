@@ -5,7 +5,7 @@ import tensorflow as tf
 
 from config import config_import as conf
 
-MASK_THRESHOLD = conf.get_config_data_by_key('entrance')['MASK_THRESHOLD']
+MASK_THRESHOLD = conf.get_config_data_by_key("entrance")["MASK_THRESHOLD"]
 
 
 def load_tflite_model(tf_model_path):
@@ -342,7 +342,7 @@ def draw_results(
         ymin = max(0, int(bbox[1] * height))
         xmax = min(int(bbox[2] * width), width)
         ymax = min(int(bbox[3] * height), height)
-        if ((xmax-xmin) * (ymax-ymin)) / width / height < (MASK_THRESHOLD):
+        if ((xmax - xmin) * (ymax - ymin)) / width / height < (MASK_THRESHOLD):
             continue
         box = ([xmin, ymin, xmax, ymax], class_id)
         boxes.append(box)

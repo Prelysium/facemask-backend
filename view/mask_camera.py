@@ -9,14 +9,15 @@ from tracker.tracker import Tracker
 from human.detect import cocoDetection
 from view.messages import add_view_messages
 from config import config_import as conf
+
 # from notifications import sms_notification as send_sms
 
 
-CAMERA_CONF = conf.get_config_data_by_key('camera_in')
+CAMERA_CONF = conf.get_config_data_by_key("camera_in")
 
-OUTPUT_WINDOW_TITLE = CAMERA_CONF['OUTPUT_WINDOW_TITLE']
-RELEASE_MESSAGE = CAMERA_CONF['RELEASE_MESSAGE']
-TIME_INFO_SAMPLE = CAMERA_CONF['TIME_INFO_SAMPLE']
+OUTPUT_WINDOW_TITLE = CAMERA_CONF["OUTPUT_WINDOW_TITLE"]
+RELEASE_MESSAGE = CAMERA_CONF["RELEASE_MESSAGE"]
+TIME_INFO_SAMPLE = CAMERA_CONF["TIME_INFO_SAMPLE"]
 
 
 def video_output(writer, img_raw, save):
@@ -37,8 +38,9 @@ def video_output(writer, img_raw, save):
     write_frame_stamp = time.time()
 
     cv2.namedWindow(OUTPUT_WINDOW_TITLE, cv2.WND_PROP_FULLSCREEN)
-    cv2.setWindowProperty(OUTPUT_WINDOW_TITLE,
-                          cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+    cv2.setWindowProperty(
+        OUTPUT_WINDOW_TITLE, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN
+    )
     cv2.imshow(OUTPUT_WINDOW_TITLE, img_raw[:, :, :])
     cv2.waitKey(1)
 
@@ -82,21 +84,23 @@ def run_mask_camera(video_path, output_video_name, conf_thresh, target_shape):
                 conf_thresh,
                 iou_thresh=0.5,
                 target_shape=target_shape,
-                show_result=False)
+                show_result=False,
+            )
 
             # add UI messages on image
-            img_raw = add_view_messages(
-                img_raw,
-                len(mask_boxes),
-                masks_on)
+            img_raw = add_view_messages(img_raw, len(mask_boxes), masks_on)
 
             inference_stamp = time.time()
-            write_frame_stamp = video_output(
-                writer, img_raw, bool(output_video_name))
+            write_frame_stamp = video_output(writer, img_raw, bool(output_video_name))
 
-            print(TIME_INFO_SAMPLE % (read_frame_stamp - start_stamp,
-                                      inference_stamp - read_frame_stamp,
-                                      write_frame_stamp - inference_stamp))
+            print(
+                TIME_INFO_SAMPLE
+                % (
+                    read_frame_stamp - start_stamp,
+                    inference_stamp - read_frame_stamp,
+                    write_frame_stamp - inference_stamp,
+                )
+            )
         else:
             cap.release()
             print(RELEASE_MESSAGE)

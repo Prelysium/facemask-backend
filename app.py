@@ -9,18 +9,26 @@ from mask.detect import inference
 from DB.db import initialize_database
 from config import config_import as conf
 
-VIDEO_PATHS = conf.get_config_data_by_key('video_paths')
-CAMERA_IN_VIDEO_PATH = VIDEO_PATHS['CAMERA_IN']
-CAMERA_OUT_VIDEO_PATH = VIDEO_PATHS['CAMERA_OUT']
+VIDEO_PATHS = conf.get_config_data_by_key("video_paths")
+CAMERA_IN_VIDEO_PATH = VIDEO_PATHS["CAMERA_IN"]
+CAMERA_OUT_VIDEO_PATH = VIDEO_PATHS["CAMERA_OUT"]
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Face Mask Detection")
-    parser.add_argument('--video-mode', type=int, default=0,
-                        help='run mask_camera or track_camera,\
-                             `0` means mask_camera')
-    parser.add_argument('--output', type=str, default='0',
-                        help='save the result to a new video, \
-                            `0` means dont save')
+    parser.add_argument(
+        "--video-mode",
+        type=int,
+        default=0,
+        help="run mask_camera or track_camera,\
+                             `0` means mask_camera",
+    )
+    parser.add_argument(
+        "--output",
+        type=str,
+        default="0",
+        help="save the result to a new video, \
+                            `0` means dont save",
+    )
 
     args = parser.parse_args()
 
@@ -32,24 +40,30 @@ if __name__ == "__main__":
         pass
 
     initialize_database()
-    output_dir = ''
+    output_dir = ""
 
-    if args.output == '1':
-        output_dir = './out_data/'
+    if args.output == "1":
+        output_dir = "./out_data/"
         try:
             os.mkdir(output_dir)
-        except: 
+        except:
             pass
-        output_dir += 'test.avi'
+        output_dir += "test.avi"
 
     # Run the in camera in bidirectional mode
     # Tracking is set to False since the track camera
     # performs this task
     if args.video_mode:
-        run_track_camera(CAMERA_OUT_VIDEO_PATH, output_dir, conf_thresh=0.5, 
-                        target_shape=(260, 260), debug=True)
+        run_track_camera(
+            CAMERA_OUT_VIDEO_PATH,
+            output_dir,
+            conf_thresh=0.5,
+            target_shape=(260, 260),
+            debug=True,
+        )
 
     # Run the out camera in bidirectional mode
     else:
-        run_mask_camera(CAMERA_IN_VIDEO_PATH, output_dir, conf_thresh=0.5, 
-                        target_shape=(260, 260))
+        run_mask_camera(
+            CAMERA_IN_VIDEO_PATH, output_dir, conf_thresh=0.5, target_shape=(260, 260)
+        )

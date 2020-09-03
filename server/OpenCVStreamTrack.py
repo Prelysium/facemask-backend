@@ -21,15 +21,15 @@ class OpenCVStreamTrack(MediaStreamTrack):
         while not self.track._queue.empty():
             frame = await self.track.recv()
 
-        if self.mode == "regular":
-            time.sleep(0.05)
-            return frame
+        # if self.mode == "regular":
+        #     time.sleep(0.05)
+        #     return frame
 
         img = cv2.cvtColor(np.copy(frame.to_ndarray(format="bgr24")), cv2.COLOR_BGR2RGB)
         # img = np.array(frame)
 
         now = time.time()
-        detect_masks(img)
+        _, masks_on = detect_masks(img, blur=self.mode == "regular")
         # print(self.track._id, time.time() - now)
 
         # # prepare color

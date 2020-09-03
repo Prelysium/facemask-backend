@@ -1,5 +1,3 @@
-
-
 class ImageGenerator:
     """
     This class organizes images and videos uploaded from the server.
@@ -11,6 +9,7 @@ class ImageGenerator:
         image_dic (dic): python dictionary to save file on the id. key(id), value(file).
         image_name_dic (dic): python dicionary to save file name on the id. key(id), value(filename).
     """
+
     def __init__(self):
         self.image_id = 0
         self.image_dic = {}
@@ -29,7 +28,7 @@ class ImageGenerator:
         This method fills two python dictionary.
         1) id- file
         2) id- filename
-        
+
         Args:
             image_id (int): generated image id
             image (object): python pillow object of the image.
@@ -40,22 +39,22 @@ class ImageGenerator:
 
     def get_image(self, image_id):
         """
-        This method return image file on the id. 
+        This method return image file on the id.
         Args:
             image_id (int): generated image id
-        
+
         Returns:
-            image file on the id. 
+            image file on the id.
         """
         return self.image_dic[image_id]
 
     def get_image_name(self, image_id):
         """
-        This method return image name on the id. 
+        This method return image name on the id.
         Args:
             image_id (int): generated image id
-        
+
         Returns:
-            image name on the id. 
+            image name on the id.
         """
         return self.image_name_dic[image_id]

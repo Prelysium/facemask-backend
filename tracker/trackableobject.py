@@ -21,6 +21,6 @@ class TrackableObject:
         self.centroids = [centroid]
         # indicates whether object has been counted or not
         self.counted = False
-        self.direction = ''
-        self.prev_direction = ''
-        self.start_point = ''
+        self.direction = ""
+        self.prev_direction = ""
+        self.start_point = ""
