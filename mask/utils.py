@@ -342,7 +342,6 @@ def draw_results(
         ymin = max(0, int(bbox[1] * height))
         xmax = min(int(bbox[2] * width), width)
         ymax = min(int(bbox[3] * height), height)
-        print((xmax-xmin) * (ymax-ymin)/ width / height)
         if ((xmax-xmin) * (ymax-ymin)) / width / height < (MASK_THRESHOLD):
             continue
         box = ([xmin, ymin, xmax, ymax], class_id)

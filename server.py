@@ -197,6 +197,6 @@ if __name__ == "__main__":
     )
 
     # app.add_routes(routes)
-    app.add_routes([web.static("/", ROOT + "server/images")])
+    app.add_routes([web.static("/", ROOT + "/server/images")])
     port = 5000 if len(sys.argv) == 1 else sys.argv[1]
     web.run_app(app, port=port)
