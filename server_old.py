@@ -57,12 +57,12 @@ async def index(request):
     return web.Response(content_type="text/html", text=content)
 
 
-@routes.post("/api/getfile")
+@routes.get("/api/image")
 async def get_file(request):
     image_id = request.rel_url.query['id']
     image = image_generator.get_image(image_id)
-
-    return web.Response(body=image.getvalue(), content_type="image/jpeg")
+    file_name = image_generator.get_image_name(image_id)
+    return web.Response(body=image.getvalue(), content_type="image/jpeg", headers={'Content-Disposition': 'attachment; filename="' + str(file_name)})
 
 
 @routes.post("/api/file")
@@ -72,16 +72,9 @@ async def file(request):
     my_pic_names = []
     for file_name in post:
         file = post.get(file_name)
-        print(file)
         img_content = file.file.read()
         # Read image
         pic = BytesIO(img_content)
-
-        print(pic)
-
-        with open("out.mp4", "wb") as outfile:
-            # Copy the BytesIO stream to the output file
-            outfile.write(pic.getbuffer())
 
         ###### Do transformation of image and save it locally.
         image = Image.open(pic).convert("RGB")
@@ -92,7 +85,11 @@ async def file(request):
         Image.fromarray(image).show()
         # saving
         image_id = image_generator.get_image_id()
-        image_generator.add_image(image_id, pic)
+        with open("server/images/" + str(image_id) + ".png", "wb") as outfile:
+            # Copy the BytesIO stream to the output file
+            outfile.write(pic.getbuffer())
+
+        image_generator.add_image(image_id, pic, file_name)
         my_pic_names.append(image_id)
 
     return web.Response(
@@ -121,7 +118,7 @@ if __name__ == "__main__":
     cors = aiohttp_cors.setup(app)
     resource_offer = cors.add(app.router.add_resource("/api/offer"))
     resource_file = cors.add(app.router.add_resource("/api/file"))
-    resource_getfile = cors.add(app.router.add_resource("/api/getfile"))
+    resource_getfile = cors.add(app.router.add_resource("/api/image"))
     cors.add(resource_offer.add_route("POST", offer), {
         "http://localhost:3000": aiohttp_cors.ResourceOptions(
             allow_credentials=True,
@@ -150,6 +147,6 @@ if __name__ == "__main__":
     })
 
     # app.add_routes(routes)
-    app.add_routes([web.static("/", ROOT + "server/public")])
+    app.add_routes([web.static("/", ROOT + "server/images")])
     port = 5000 if len(sys.argv) == 1 else sys.argv[1]
     web.run_app(app, port=port)
