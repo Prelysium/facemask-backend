@@ -17,7 +17,6 @@ class OpenCVStreamTrack(MediaStreamTrack):
         self.mode = mode
 
     async def recv(self):
-
         frame = await self.track.recv()
         while not self.track._queue.empty():
             frame = await self.track.recv()
