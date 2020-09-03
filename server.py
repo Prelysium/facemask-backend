@@ -60,22 +60,23 @@ async def index(request):
     return web.Response(content_type="text/html", text=content)
 
 
-# This method handels image file requests from the server. 
+# This method handels image file requests from the server.
 @routes.get("/api/image")
 async def get_file(request):
     # Get request id
     image_id = request.rel_url.query["id"]
-    
-    # get file 
+
+    # get file
     image = image_generator.get_image(image_id)
     file_name = image_generator.get_image_name(image_id)
-    
+
     # return file
     return web.Response(
         body=image.getvalue(),
         content_type="image/jpeg",
         headers={"Content-Disposition": 'attachment; filename="' + str(file_name)},
     )
+
 
 # This endpoint works on file uploading and transformation.
 @routes.post("/api/file")
@@ -86,12 +87,17 @@ async def file(request):
 
     for file_name in post:
         file = post.get(file_name)
+<<<<<<< HEAD
         if file.content_type.split('/')[0] == 'video':
             video_path = './server/videos/{}'.format(file.filename)
+=======
+        if file.content_type.split("/")[0] == "video":
+            video_path = "./videos/{}".format(file.filename)
+>>>>>>> 99d945359d8051da17d1305b0607defccc58b520
             video_content = file.file.read()
             video = BytesIO(video_content)
             # save video
-            with open(video_path,'wb') as outfile:
+            with open(video_path, "wb") as outfile:
                 outfile.write(video.getbuffer())
             outfile.close()
 
@@ -100,7 +106,11 @@ async def file(request):
                 raise ValueError("Video open failed.")
                 return
 
+<<<<<<< HEAD
             writer = write_output_video(cap, './server/videos/output/' + file.filename.split('.')[0] + '.avi')
+=======
+            writer = write_output_video(cap, "./videos/output/output.avi")
+>>>>>>> 99d945359d8051da17d1305b0607defccc58b520
             status_video_capture = True
             while status_video_capture:
                 status_video_capture, img_raw = cap.read()
@@ -109,10 +119,14 @@ async def file(request):
                     detect_masks(img_raw)
                     img_raw = cv2.cvtColor(img_raw, cv2.COLOR_RGB2BGR)
                     writer.write(img_raw[:, :, :])
+<<<<<<< HEAD
 
             # Store the video
             my_pic_names.append(file.filename.split('.')[0] + '.avi')
             os.remove(video_path)
+=======
+            # os.remove(video_path)
+>>>>>>> 99d945359d8051da17d1305b0607defccc58b520
         else:
             img_content = file.file.read()
             # Read image
@@ -133,9 +147,11 @@ async def file(request):
                 outfile.write(pic.getbuffer())
 
             imgByteArr = BytesIO()
-            image.save(imgByteArr, format='JPEG')
+            image.save(imgByteArr, format="JPEG")
             # Store the image
-            image_generator.add_image(image_id, imgByteArr, file_name.split('.')[0] + ".jpeg")
+            image_generator.add_image(
+                image_id, imgByteArr, file_name.split(".")[0] + ".jpeg"
+            )
             my_pic_names.append(image_id)
             os.remove('./server/images/' + str(image_id) + '.jpeg')
 
@@ -156,7 +172,6 @@ async def offer(request):
         content_type="application/json",
         body=json.dumps({"sdp": answer.sdp, "type": "answer"}),
     )
-
 
 
 # Server main

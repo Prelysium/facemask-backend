@@ -9,18 +9,15 @@ from human.detect import cocoDetection
 from DB.db import CounterDB
 from config import config_import as conf
 
-CAMERA_CONF = conf.get_config_data_by_key('camera_out')
-RELEASE_MESSAGE = CAMERA_CONF['RELEASE_MESSAGE']
-TIME_INFO_SAMPLE = CAMERA_CONF['TIME_INFO_SAMPLE']
-DOOR_VIEW_WINDOW_TITLE = CAMERA_CONF['DOOR_VIEW_WINDOW_TITLE']
+CAMERA_CONF = conf.get_config_data_by_key("camera_out")
+RELEASE_MESSAGE = CAMERA_CONF["RELEASE_MESSAGE"]
+TIME_INFO_SAMPLE = CAMERA_CONF["TIME_INFO_SAMPLE"]
+DOOR_VIEW_WINDOW_TITLE = CAMERA_CONF["DOOR_VIEW_WINDOW_TITLE"]
 
 
 def run_track_camera(
-        video_path,
-        output_video_name,
-        conf_thresh,
-        target_shape,
-        debug=False):
+    video_path, output_video_name, conf_thresh, target_shape, debug=False
+):
     """
     Runs the model on a video stream (file or camera input)
 
@@ -63,18 +60,22 @@ def run_track_camera(
             # Human detection
             people_boxes = coco.inference(img_raw)
             # tracking
-            tracker.track_object(read_frame_stamp, people_boxes,
-                                 img_raw, threshold=threshold,
-                                 debug=debug)
+            tracker.track_object(
+                read_frame_stamp,
+                people_boxes,
+                img_raw,
+                threshold=threshold,
+                debug=debug,
+            )
 
             inference_stamp = time.time()
             # print(TIME_INFO_SAMPLE % (read_frame_stamp - start_stamp,
             #                           inference_stamp - read_frame_stamp))
 
             if debug:
-                image = cv2.line(img_raw, (0, threshold),
-                                 (width, threshold),
-                                 (0, 255, 255), 2)
+                image = cv2.line(
+                    img_raw, (0, threshold), (width, threshold), (0, 255, 255), 2
+                )
                 cv2.imshow(DOOR_VIEW_WINDOW_TITLE, image)
                 cv2.waitKey(1)
 

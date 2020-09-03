@@ -8,7 +8,7 @@ import numpy as np
 from scipy.spatial import distance as dist
 
 
-class CentroidTracker():
+class CentroidTracker:
     """
     CentroidTracker class for tracking objects using centroids.
     Stores the number of maximum consecutive frames a given
@@ -21,6 +21,7 @@ class CentroidTracker():
         disappeared (dict): Dictionary with
             (ID:number of consecutive disappearence) pairs
     """
+
     def __init__(self, maxDisappeared=50):
         """
         Args:

@@ -6,10 +6,11 @@ from tracker.trackableobject import TrackableObject
 from tracker.centroidtracker import CentroidTracker
 from DB.db import CounterDB
 from config import config_import as conf
+
 # from notifications.sms_notification import publish_to_topic
 
-ENTRANCE_CONF = conf.get_config_data_by_key('entrance')
-CAPACITY = conf.get_config_data_by_key('CAPACITY')
+ENTRANCE_CONF = conf.get_config_data_by_key("entrance")
+CAPACITY = conf.get_config_data_by_key("CAPACITY")
 
 
 class Tracker:
@@ -38,8 +39,7 @@ class Tracker:
         self.DB = CounterDB()
         self.timer = 0
 
-    def track_object(self, frame_stamp, boxes, image,
-                     threshold=0, debug=False):
+    def track_object(self, frame_stamp, boxes, image, threshold=0, debug=False):
         """
         Track objects, whether they have been counted in or not
         and update database information according to new entrances
@@ -76,11 +76,11 @@ class Tracker:
                 if not to.counted:
                     to.counted = True
                     if centroid[1] > threshold:
-                        to.start_point = 'down'
+                        to.start_point = "down"
                     else:
-                        to.start_point = 'up'
+                        to.start_point = "up"
 
-                print(f'total people: {people_in-people_out}')
+                print(f"total people: {people_in-people_out}")
                 # the difference between the y-coordinate
                 # of the current centroid & the mean
                 # of previous centroids will tell us in
@@ -89,28 +89,28 @@ class Tracker:
                 y = [c[1] for c in to.centroids]
                 direction = centroid[1] - np.mean(y)
                 to.centroids.append(centroid)
-                
+
                 # Define the direction towards that the person
                 # is walking to & update it on the obj instance
                 if direction > 0 and centroid[1] > threshold:
-                    to.direction = 'in'
+                    to.direction = "in"
                 elif direction < 0 and centroid[1] < threshold:
-                    to.direction = 'out'
+                    to.direction = "out"
 
                 # If the new direction of the object is
                 # different to its previous direction
                 # update the people counter
                 if to.direction != to.prev_direction:
                     # A person has just walked in
-                    if to.direction == 'in' and to.start_point != 'down':
+                    if to.direction == "in" and to.start_point != "down":
                         people_in += 1
-                        to.prev_direction = 'in'
-                        to.start_point = 'up'
+                        to.prev_direction = "in"
+                        to.start_point = "up"
                     # A person has just walked out
-                    elif to.direction == 'out' and to.start_point != 'up':
-                        to.prev_direction = 'out'
+                    elif to.direction == "out" and to.start_point != "up":
+                        to.prev_direction = "out"
                         people_out += 1
-                        to.start_point = 'down'
+                        to.start_point = "down"
 
             # store the trackable object in our dictionary
             self.trackableObjects[objectID] = to
@@ -121,10 +121,16 @@ class Tracker:
             # object on the output frame
             if debug:
                 text = "ID {}".format(objectID)
-                cv2.putText(image, text, (centroid[0] - 10, centroid[1] - 10),
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
-                cv2.circle(image, (centroid[0], centroid[1]),
-                           4, (0, 255, 0), -1)
+                cv2.putText(
+                    image,
+                    text,
+                    (centroid[0] - 10, centroid[1] - 10),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    0.5,
+                    (0, 255, 0),
+                    2,
+                )
+                cv2.circle(image, (centroid[0], centroid[1]), 4, (0, 255, 0), -1)
         if people_out > people_in:
             people_out = people_in
         # update database information about total number

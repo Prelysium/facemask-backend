@@ -2,14 +2,14 @@ import sqlite3
 from sqlite3 import Error
 from config import config_import as conf
 
-DB_CONF = conf.get_config_data_by_key('db')
-DB_FILE_PATH = DB_CONF['DB_FILE_PATH']
-COUNTER_TABLE = DB_CONF['COUNTER_TABLE']
-ID_COLUMN = DB_CONF['ID_COLUMN']
-COUNT_COLUMN = DB_CONF['COUNT_COLUMN']
-ID_IN = DB_CONF['ID_IN']
-ID_OUT = DB_CONF['ID_OUT']
-SELECT_TEMPLATE = DB_CONF['SELECT_TEMPLATE']
+DB_CONF = conf.get_config_data_by_key("db")
+DB_FILE_PATH = DB_CONF["DB_FILE_PATH"]
+COUNTER_TABLE = DB_CONF["COUNTER_TABLE"]
+ID_COLUMN = DB_CONF["ID_COLUMN"]
+COUNT_COLUMN = DB_CONF["COUNT_COLUMN"]
+ID_IN = DB_CONF["ID_IN"]
+ID_OUT = DB_CONF["ID_OUT"]
+SELECT_TEMPLATE = DB_CONF["SELECT_TEMPLATE"]
 
 
 def initialize_database():
@@ -23,11 +23,17 @@ def initialize_database():
         conn = sqlite3.connect(DB_FILE_PATH)
         c = conn.cursor()
         # create counter table
-        c.execute("CREATE TABLE {} ([{}] str UNIQUE, [{}] INTEGER)".format(
-            COUNTER_TABLE, ID_COLUMN, COUNT_COLUMN))
+        c.execute(
+            "CREATE TABLE {} ([{}] str UNIQUE, [{}] INTEGER)".format(
+                COUNTER_TABLE, ID_COLUMN, COUNT_COLUMN
+            )
+        )
         # insert in/out counts with value 0
-        c.execute('insert into {} values ("{}", 0), ("{}", 0)'.format(
-            COUNTER_TABLE, ID_IN, ID_OUT))
+        c.execute(
+            'insert into {} values ("{}", 0), ("{}", 0)'.format(
+                COUNTER_TABLE, ID_IN, ID_OUT
+            )
+        )
 
         conn.commit()
     except Error as e:
@@ -44,7 +50,7 @@ def reset_counters():
     db.update_out(0)
 
 
-class CounterDB():
+class CounterDB:
     """
     Opens a connection to the sqlite database and implements functionality
     to get/update infromation in the COUNTER table
@@ -67,8 +73,9 @@ class CounterDB():
             (int): Total number of people that went in
         """
         c = self.conn.cursor()
-        count_in_query = c.execute(SELECT_TEMPLATE.format(
-            COUNT_COLUMN, COUNTER_TABLE, ID_COLUMN, ID_IN))
+        count_in_query = c.execute(
+            SELECT_TEMPLATE.format(COUNT_COLUMN, COUNTER_TABLE, ID_COLUMN, ID_IN)
+        )
         count_in = count_in_query.fetchall()[0][0]
         return count_in
 
@@ -80,8 +87,9 @@ class CounterDB():
             (int): Total number of people that went out
         """
         c = self.conn.cursor()
-        count_out_query = c.execute(SELECT_TEMPLATE.format(
-            COUNT_COLUMN, COUNTER_TABLE, ID_COLUMN, ID_OUT))
+        count_out_query = c.execute(
+            SELECT_TEMPLATE.format(COUNT_COLUMN, COUNTER_TABLE, ID_COLUMN, ID_OUT)
+        )
         count_out = count_out_query.fetchall()[0][0]
         return count_out
 
@@ -103,8 +111,11 @@ class CounterDB():
             count_in (int): Number to update database with
         """
         c = self.conn.cursor()
-        c.execute("update {} set {}={} where {}='{}'".format(
-            COUNTER_TABLE, COUNT_COLUMN, count_in, ID_COLUMN, ID_IN))
+        c.execute(
+            "update {} set {}={} where {}='{}'".format(
+                COUNTER_TABLE, COUNT_COLUMN, count_in, ID_COLUMN, ID_IN
+            )
+        )
         self.conn.commit()
 
     def update_out(self, count_out):
@@ -120,6 +131,9 @@ class CounterDB():
         #     count_out = in_count
 
         c = self.conn.cursor()
-        c.execute("update {} set {}={} where {}='{}'".format(
-            COUNTER_TABLE, COUNT_COLUMN, count_out, ID_COLUMN, ID_OUT))
+        c.execute(
+            "update {} set {}={} where {}='{}'".format(
+                COUNTER_TABLE, COUNT_COLUMN, count_out, ID_COLUMN, ID_OUT
+            )
+        )
         self.conn.commit()
