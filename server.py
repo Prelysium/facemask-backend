@@ -87,7 +87,7 @@ async def file(request):
     for file_name in post:
         file = post.get(file_name)
         if file.content_type.split('/')[0] == 'video':
-            video_path = './videos/{}'.format(file.filename)
+            video_path = './server/videos/{}'.format(file.filename)
             video_content = file.file.read()
             video = BytesIO(video_content)
             # save video
@@ -100,7 +100,7 @@ async def file(request):
                 raise ValueError("Video open failed.")
                 return
 
-            writer = write_output_video(cap, './videos/output/output.avi')
+            writer = write_output_video(cap, './server/videos/output/' + file.filename.split('.')[0] + '.avi')
             status_video_capture = True
             while status_video_capture:
                 status_video_capture, img_raw = cap.read()
@@ -109,6 +109,9 @@ async def file(request):
                     detect_masks(img_raw)
                     img_raw = cv2.cvtColor(img_raw, cv2.COLOR_RGB2BGR)
                     writer.write(img_raw[:, :, :])
+
+            # Store the video
+            my_pic_names.append(file.filename.split('.')[0] + '.avi')
             os.remove(video_path)
         else:
             img_content = file.file.read()
@@ -134,7 +137,7 @@ async def file(request):
             # Store the image
             image_generator.add_image(image_id, imgByteArr, file_name.split('.')[0] + ".jpeg")
             my_pic_names.append(image_id)
-            # os.remove('./server/images/' + str(image_id) + '.png')
+            os.remove('./server/images/' + str(image_id) + '.jpeg')
 
     # return status to the server.
     return web.Response(
@@ -202,6 +205,6 @@ if __name__ == "__main__":
     )
 
     # app.add_routes(routes)
-    app.add_routes([web.static("/", ROOT + "server/images")])
+    app.add_routes([web.static("/", ROOT + "server")])
     port = 5000 if len(sys.argv) == 1 else sys.argv[1]
     web.run_app(app, port=port)
