@@ -74,12 +74,15 @@ async def file(request):
         file = post.get(file_name)
         print(file)
         img_content = file.file.read()
-        print(file.filename)
-
-        print(file.filename.read())
-
         # Read image
         pic = BytesIO(img_content)
+
+        print(pic)
+
+        with open("out.mp4", "wb") as outfile:
+            # Copy the BytesIO stream to the output file
+            outfile.write(pic.getbuffer())
+
         ###### Do transformation of image and save it locally.
         image = Image.open(pic).convert("RGB")
         image = np.array(image)
