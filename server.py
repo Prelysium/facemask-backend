@@ -104,9 +104,10 @@ async def file(request):
             status_video_capture = True
             while status_video_capture:
                 status_video_capture, img_raw = cap.read()
-
                 if status_video_capture:
+                    img_raw = cv2.cvtColor(img_raw, cv2.COLOR_BGR2RGB)
                     detect_masks(img_raw)
+                    img_raw = cv2.cvtColor(img_raw, cv2.COLOR_RGB2BGR)
                     writer.write(img_raw[:, :, :])
             os.remove(video_path)
         else:
@@ -197,6 +198,6 @@ if __name__ == "__main__":
     )
 
     # app.add_routes(routes)
-    app.add_routes([web.static("/", ROOT + "/server/images")])
+    app.add_routes([web.static("/", ROOT + "server/images")])
     port = 5000 if len(sys.argv) == 1 else sys.argv[1]
     web.run_app(app, port=port)
