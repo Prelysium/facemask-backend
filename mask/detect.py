@@ -78,7 +78,7 @@ def inference(
         keep_idxs, image, bbox_max_scores, bbox_max_score_classes, y_bboxes
     )
 
-    if show_result:
-        Image.fromarray(image).show()
+    # if show_result:
+    #     Image.fromarray(image).show()
 
     return boxes, masks_on

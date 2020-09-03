@@ -120,7 +120,7 @@ async def file(request):
             image = np.array(image)
             image = image[:, :, ::-1].copy()
             detect_masks(image, show_result=True)
-            Image.fromarray(image).show()
+            image = Image.fromarray(image)
 
             # saving
             image_id = image_generator.get_image_id()
@@ -128,9 +128,12 @@ async def file(request):
                 # Copy the BytesIO stream to the output file
                 outfile.write(pic.getbuffer())
 
+            imgByteArr = BytesIO()
+            image.save(imgByteArr, format='PNG')
             # Store the image
-            image_generator.add_image(image_id, pic, file_name)
+            image_generator.add_image(image_id, imgByteArr, file_name)
             my_pic_names.append(image_id)
+            os.remove('./server/images/' + str(image_id) + '.png')
 
     # return status to the server.
     return web.Response(
