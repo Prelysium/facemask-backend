@@ -7,6 +7,25 @@ import time
 from mask.detect import inference as detect_masks
 
 
+class MaskMessage():
+    def __init__(self):
+        self.message = ''
+
+    def set(self, mask_on):
+        if mask_on:
+            if self.message != 'Thanks for wearing a mask':
+                self.message = 'Thanks for wearing a mask'
+        else:
+            if self.message != 'Please wear a mask':
+                self.message = 'Please wear a mask'
+
+    def get(self):
+        return self.message
+
+
+message_class = MaskMessage()
+
+
 class OpenCVStreamTrack(MediaStreamTrack):
 
     kind = "video"
@@ -15,6 +34,7 @@ class OpenCVStreamTrack(MediaStreamTrack):
         super().__init__()
         self.track = track
         self.mode = mode
+
 
     async def recv(self):
         frame = await self.track.recv()
@@ -30,6 +50,8 @@ class OpenCVStreamTrack(MediaStreamTrack):
 
         now = time.time()
         _, masks_on = detect_masks(img, blur=self.mode == "regular")
+        message_class.set(masks_on)
+
         # print(self.track._id, time.time() - now)
 
         # # prepare color
