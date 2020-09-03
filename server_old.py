@@ -12,9 +12,10 @@ import sys
 import os
 from mask.detect import inference as detect_masks
 import cv2
+
 # image information
 image_dic = {}
-image_path = './server/images/'
+image_path = "./server/images/"
 
 ROOT = os.path.dirname(__file__)
 routes = web.RouteTableDef()
@@ -59,10 +60,14 @@ async def index(request):
 
 @routes.get("/api/image")
 async def get_file(request):
-    image_id = request.rel_url.query['id']
+    image_id = request.rel_url.query["id"]
     image = image_generator.get_image(image_id)
     file_name = image_generator.get_image_name(image_id)
-    return web.Response(body=image.getvalue(), content_type="image/jpeg", headers={'Content-Disposition': 'attachment; filename="' + str(file_name)})
+    return web.Response(
+        body=image.getvalue(),
+        content_type="image/jpeg",
+        headers={"Content-Disposition": 'attachment; filename="' + str(file_name)},
+    )
 
 
 @routes.post("/api/file")
@@ -93,17 +98,15 @@ async def file(request):
         my_pic_names.append(image_id)
 
     return web.Response(
-            content_type="application/json",
-            body=json.dumps({"pic": json.dumps(my_pic_names), "type": "answer"}),
-        )
+        content_type="application/json",
+        body=json.dumps({"pic": json.dumps(my_pic_names), "type": "answer"}),
+    )
 
 
 @routes.post("/api/offer")
 async def offer(request):
     params = await request.json()
-    answer = await connection_container.handle_offer(
-        sdp=params["sdp"], mode="cartoon"
-    )
+    answer = await connection_container.handle_offer(sdp=params["sdp"], mode="cartoon")
 
     return web.Response(
         content_type="application/json",
@@ -119,32 +122,41 @@ if __name__ == "__main__":
     resource_offer = cors.add(app.router.add_resource("/api/offer"))
     resource_file = cors.add(app.router.add_resource("/api/file"))
     resource_getfile = cors.add(app.router.add_resource("/api/image"))
-    cors.add(resource_offer.add_route("POST", offer), {
-        "http://localhost:3000": aiohttp_cors.ResourceOptions(
-            allow_credentials=True,
-            expose_headers=("X-Custom-Server-Header",),
-            allow_headers=("X-Requested-With", "Content-Type"),
-            max_age=3600,
-        )
-    })
+    cors.add(
+        resource_offer.add_route("POST", offer),
+        {
+            "http://localhost:3000": aiohttp_cors.ResourceOptions(
+                allow_credentials=True,
+                expose_headers=("X-Custom-Server-Header",),
+                allow_headers=("X-Requested-With", "Content-Type"),
+                max_age=3600,
+            )
+        },
+    )
 
-    cors.add(resource_file.add_route("POST", file), {
-        "http://localhost:3000": aiohttp_cors.ResourceOptions(
-            allow_credentials=True,
-            expose_headers=("X-Custom-Server-Header",),
-            allow_headers=("X-Requested-With", "Content-Type"),
-            max_age=3600,
-        )
-    })
+    cors.add(
+        resource_file.add_route("POST", file),
+        {
+            "http://localhost:3000": aiohttp_cors.ResourceOptions(
+                allow_credentials=True,
+                expose_headers=("X-Custom-Server-Header",),
+                allow_headers=("X-Requested-With", "Content-Type"),
+                max_age=3600,
+            )
+        },
+    )
 
-    cors.add(resource_getfile.add_route("GET", get_file), {
-        "http://localhost:3000": aiohttp_cors.ResourceOptions(
-            allow_credentials=True,
-            expose_headers=("X-Custom-Server-Header",),
-            allow_headers=("X-Requested-With", "Content-Type"),
-            max_age=3600,
-        )
-    })
+    cors.add(
+        resource_getfile.add_route("GET", get_file),
+        {
+            "http://localhost:3000": aiohttp_cors.ResourceOptions(
+                allow_credentials=True,
+                expose_headers=("X-Custom-Server-Header",),
+                allow_headers=("X-Requested-With", "Content-Type"),
+                max_age=3600,
+            )
+        },
+    )
 
     # app.add_routes(routes)
     app.add_routes([web.static("/", ROOT + "server/images")])

@@ -23,7 +23,9 @@ async def server(websocket, path):
         else:
             params = json.loads(message)
             # Taking video streaming sdp
-            answer = await connection_container.handle_offer(sdp=params["sdp"], mode='cartoon')
+            answer = await connection_container.handle_offer(
+                sdp=params["sdp"], mode="cartoon"
+            )
             await websocket.send(answer.sdp)
 
 

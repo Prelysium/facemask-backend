@@ -1,6 +1,4 @@
-
-
-class ImageGenerator():
+class ImageGenerator:
     def __init__(self):
         self.image_id = 0
         self.image_dic = {}
