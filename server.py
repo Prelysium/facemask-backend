@@ -119,6 +119,7 @@ async def file(request):
             image = Image.open(pic).convert("RGB")
             image = np.array(image)
             image = image[:, :, ::-1].copy()
+            image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
             detect_masks(image, show_result=True)
             image = Image.fromarray(image)
 
