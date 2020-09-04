@@ -87,13 +87,8 @@ async def file(request):
 
     for file_name in post:
         file = post.get(file_name)
-<<<<<<< HEAD
         if file.content_type.split('/')[0] == 'video':
             video_path = './server/videos/{}'.format(file.filename)
-=======
-        if file.content_type.split("/")[0] == "video":
-            video_path = "./videos/{}".format(file.filename)
->>>>>>> 99d945359d8051da17d1305b0607defccc58b520
             video_content = file.file.read()
             video = BytesIO(video_content)
             # save video
@@ -106,11 +101,7 @@ async def file(request):
                 raise ValueError("Video open failed.")
                 return
 
-<<<<<<< HEAD
             writer = write_output_video(cap, './server/videos/output/' + file.filename.split('.')[0] + '.avi')
-=======
-            writer = write_output_video(cap, "./videos/output/output.avi")
->>>>>>> 99d945359d8051da17d1305b0607defccc58b520
             status_video_capture = True
             while status_video_capture:
                 status_video_capture, img_raw = cap.read()
@@ -119,14 +110,10 @@ async def file(request):
                     detect_masks(img_raw)
                     img_raw = cv2.cvtColor(img_raw, cv2.COLOR_RGB2BGR)
                     writer.write(img_raw[:, :, :])
-<<<<<<< HEAD
 
             # Store the video
             my_pic_names.append(file.filename.split('.')[0] + '.avi')
             os.remove(video_path)
-=======
-            # os.remove(video_path)
->>>>>>> 99d945359d8051da17d1305b0607defccc58b520
         else:
             img_content = file.file.read()
             # Read image
