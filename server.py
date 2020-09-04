@@ -113,7 +113,7 @@ async def file(request):
 
             # Store the video
             my_pic_names.append(file.filename.split('.')[0] + '.avi')
-            os.remove(video_path)
+            # os.remove(video_path)
         else:
             img_content = file.file.read()
             # Read image
@@ -149,11 +149,12 @@ async def file(request):
     )
 
 
-# This endpoint handels video striming offer exchange.
+# This endpoint handles video streaming offer exchange.
 @routes.post("/api/offer")
 async def offer(request):
     params = await request.json()
-    answer = await connection_container.handle_offer(sdp=params["sdp"], mode="cartoon")
+    mode_on = params["mode"]
+    answer = await connection_container.handle_offer(sdp=params["sdp"], mode=mode_on)
 
     return web.Response(
         content_type="application/json",
