@@ -12,6 +12,8 @@ from mask.detect import inference as detect_masks
 from mask.utils import write_output_video
 from server.ConnectionContainer import ConnectionContainer
 from server.ImageGenerator import ImageGenerator
+from server.OpenCVStreamTrack import message_class
+message_class
 from aiohttp import web
 from PIL import Image
 from io import BytesIO
@@ -161,6 +163,15 @@ async def offer(request):
         body=json.dumps({"sdp": answer.sdp, "type": "answer"}),
     )
 
+@routes.get("/api/status")
+async def status(request):
+    num = message_class.get()
+
+    return web.Response(
+        content_type="application/json",
+        body=json.dumps({"number": num}),
+    )
+
 
 # Server main
 if __name__ == "__main__":
@@ -169,10 +180,23 @@ if __name__ == "__main__":
 
     cors = aiohttp_cors.setup(app)
     resource_offer = cors.add(app.router.add_resource("/api/offer"))
+    resource_status = cors.add(app.router.add_resource("/api/status"))
     resource_file = cors.add(app.router.add_resource("/api/file"))
     resource_getfile = cors.add(app.router.add_resource("/api/image"))
     cors.add(
         resource_offer.add_route("POST", offer),
+        {
+            "http://localhost:3000": aiohttp_cors.ResourceOptions(
+                allow_credentials=True,
+                expose_headers=("X-Custom-Server-Header",),
+                allow_headers=("X-Requested-With", "Content-Type"),
+                max_age=3600,
+            )
+        },
+    )
+
+    cors.add(
+        resource_status.add_route("GET", status),
         {
             "http://localhost:3000": aiohttp_cors.ResourceOptions(
                 allow_credentials=True,
